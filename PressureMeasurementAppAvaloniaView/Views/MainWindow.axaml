@@ -1,0 +1,86 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:PressureMeasurementAppAvaloniaView.ViewModels"
+        xmlns:model="using:PressureMeasurementAppAvaloniaView.Data.Entities"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Width="800" Height="600" Padding="4"
+        x:Class="PressureMeasurementAppAvaloniaView.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="Pressure Measurement">
+
+	<Design.DataContext>
+		<vm:MainViewModel />
+	</Design.DataContext>
+
+	<Grid RowDefinitions="Auto,Auto,*,Auto" x:Name="Root" Margin="10" RowSpacing="10">
+		<TextBlock Grid.Row="0"
+                   Text="Pressure Measurements"
+                   Classes="h1"
+                   Margin="0,0,0,10"/>
+		<StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    Spacing="10"
+                    Margin="0,0,0,10">
+			<TextBlock Text="From date:" VerticalAlignment="Center"/>
+			<DatePicker SelectedDate="{Binding FromDate, Mode=TwoWay}"
+                       Width="120"/>
+
+			<TextBlock Text="Till date:" VerticalAlignment="Center"/>
+			<DatePicker SelectedDate="{Binding TillDate, Mode=TwoWay}"
+                       Width="120"/>
+			<Button Content="Filter" Command="{Binding FilterCommand}"/>
+			<Button Content="Export to Excel"
+					Command="{Binding ExportToExcelCommand}"
+					Classes="Success"/>
+		</StackPanel>
+
+		<ScrollViewer Grid.Row="2">
+			<ItemsControl ItemsSource="{Binding Measurements}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate DataType="model:Measurement">
+						<Border Margin="0,5" Padding="10" BorderBrush="#DDD" BorderThickness="1">
+							<Grid ColumnDefinitions="*, Auto, Auto">
+								<StackPanel>
+									<TextBlock Text="{Binding MeasureDate, StringFormat='Date: {0:g}'}" FontWeight="Bold"/>
+									<TextBlock Text="{Binding StringFormat='{}{0}/{1}, {2} bpm'}">
+										<TextBlock.Text>
+											<MultiBinding StringFormat="{}{0}/{1}, {2} bpm">
+												<Binding Path="UpperPressure"/>
+												<Binding Path="LowerPressure"/>
+												<Binding Path="Heartbeat"/>
+											</MultiBinding>
+										</TextBlock.Text>
+									</TextBlock>
+									<TextBlock Text="{Binding Description}" FontStyle="Italic"/>
+								</StackPanel>
+
+								<Button Grid.Column="1"
+                                        Command="{Binding #Root.DataContext.EditMeasurementCommand}"
+                                        CommandParameter="{Binding}"
+                                        Margin="5,0">
+									<TextBlock Text="Edit"/>
+								</Button>
+
+								<Button Grid.Column="2"
+                                        Command="{Binding #Root.DataContext.DeleteMeasurementCommand}"
+                                        CommandParameter="{Binding}"
+                                        Classes="Danger">
+									<TextBlock Text="Delete"/>
+								</Button>
+							</Grid>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+		<Button Grid.Row="3"
+                Command="{Binding AddMeasurementCommand}"
+                HorizontalAlignment="Stretch"
+                Classes="Primary"
+                Margin="0,10,0,0">
+			<TextBlock Text="Add New Measurement" Margin="4"/>
+		</Button>
+	</Grid>
+</Window>

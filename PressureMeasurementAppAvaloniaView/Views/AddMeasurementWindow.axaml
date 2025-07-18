@@ -1,0 +1,109 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:PressureMeasurementAppAvaloniaView.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Width="500" Height="500"
+        x:Class="PressureMeasurementAppAvaloniaView.Views.AddMeasurementWindow"
+        x:DataType="vm:AddMeasurementViewModel"
+        Title="Add Measurement">
+
+	<ScrollViewer>
+		<StackPanel Margin="15" Spacing="15">
+			<TextBlock Text="Pressure Measurements (4 required)" FontWeight="Bold"/>
+
+			<Border Padding="10" BorderBrush="LightGray" BorderThickness="1" CornerRadius="5">
+				<StackPanel Spacing="5">
+					<TextBlock Text="Measurement 1" FontWeight="SemiBold"/>
+					<StackPanel Orientation="Horizontal" Spacing="10">
+						<TextBox Watermark="Upper"
+                                 Text="{Binding Pressures[0].UpperPressure, Mode=TwoWay}"
+                                 Width="80"/>
+						<TextBox Watermark="Lower"
+                                 Text="{Binding Pressures[0].LowerPressure, Mode=TwoWay}"
+                                 Width="80"/>
+						<TextBox Watermark="Heartbeat"
+                                 Text="{Binding Pressures[0].Heartbeat, Mode=TwoWay}"
+                                 Width="80"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<Border Padding="10" BorderBrush="LightGray" BorderThickness="1" CornerRadius="5">
+				<StackPanel Spacing="5">
+					<TextBlock Text="Measurement 2" FontWeight="SemiBold"/>
+					<StackPanel Orientation="Horizontal" Spacing="10">
+						<TextBox Watermark="Upper"
+                                 Text="{Binding Pressures[1].UpperPressure}"
+                                 Width="80"/>
+						<TextBox Watermark="Lower"
+                                 Text="{Binding Pressures[1].LowerPressure}"
+                                 Width="80"/>
+						<TextBox Watermark="Heartbeat"
+                                 Text="{Binding Pressures[1].Heartbeat}"
+                                 Width="80"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+			<Border Padding="10" BorderBrush="LightGray" BorderThickness="1" CornerRadius="5">
+				<StackPanel Spacing="5">
+					<TextBlock Text="Measurement 3" FontWeight="SemiBold"/>
+					<StackPanel Orientation="Horizontal" Spacing="10">
+						<TextBox Watermark="Upper"
+                                 Text="{Binding Pressures[2].UpperPressure}"
+                                 Width="80"/>
+						<TextBox Watermark="Lower"
+                                 Text="{Binding Pressures[2].LowerPressure}"
+                                 Width="80"/>
+						<TextBox Watermark="Heartbeat"
+                                 Text="{Binding Pressures[2].Heartbeat}"
+                                 Width="80"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+			<Border Padding="10" BorderBrush="LightGray" BorderThickness="1" CornerRadius="5">
+				<StackPanel Spacing="5">
+					<TextBlock Text="Measurement 4" FontWeight="SemiBold"/>
+					<StackPanel Orientation="Horizontal" Spacing="10">
+						<TextBox Watermark="Upper"
+                                 Text="{Binding Pressures[3].UpperPressure}"
+                                 Width="80"/>
+						<TextBox Watermark="Lower"
+                                 Text="{Binding Pressures[3].LowerPressure}"
+                                 Width="80"/>
+						<TextBox Watermark="Heartbeat"
+                                 Text="{Binding Pressures[3].Heartbeat}"
+                                 Width="80"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<TextBlock Text="Lifestyle Information" FontWeight="Bold" Margin="0,10,0,0"/>
+			<StackPanel Spacing="10">
+				<TextBox Watermark="Description"
+                         Text="{Binding Lifestyle.Description, Mode=TwoWay}"/>
+				<CheckBox Content="Smoking"
+                          IsChecked="{Binding Lifestyle.Smoking, Mode=TwoWay}"/>
+				<CheckBox Content="Alcohol"
+                          IsChecked="{Binding Lifestyle.Alcohol, Mode=TwoWay}"/>
+				<CheckBox Content="Sport"
+                          IsChecked="{Binding Lifestyle.Sport, Mode=TwoWay}"/>
+				<CheckBox Content="Stretching"
+                          IsChecked="{Binding Lifestyle.Stretching, Mode=TwoWay}"/>
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
+				<Button Content="Cancel"
+                        Command="{Binding CancelCommand}"
+                        Width="100" 
+						IsEnabled="True"/>
+				<Button Content="Save"
+                        Command="{Binding SaveCommand}"
+                        Width="100"
+                        Classes="Primary"
+						IsEnabled="True"/>
+			</StackPanel>
+		</StackPanel>
+	</ScrollViewer>
+</Window>

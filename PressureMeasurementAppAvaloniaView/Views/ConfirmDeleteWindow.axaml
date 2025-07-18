@@ -1,0 +1,19 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:PressureMeasurementAppAvaloniaView.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Width="350" Height="200"
+        x:Class="PressureMeasurementAppAvaloniaView.Views.ConfirmDeleteWindow"
+        x:DataType="vm:ConfirmDeleteViewModel"
+        Title="Confirm Delete">
+
+	<Grid RowDefinitions="Auto,*" Margin="15" RowSpacing="15">
+		<TextBlock Text="{Binding ConfirmationText}" TextWrapping="Wrap"/>
+		<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+			<Button Content="Cancel" Command="{Binding CancelCommand}" Width="100"/>
+			<Button Content="Delete" Command="{Binding DeleteCommand}" Width="100" Classes="Danger"/>
+		</StackPanel>
+	</Grid>
+</Window>

@@ -1,0 +1,43 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:PressureMeasurementAppAvaloniaView.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Width="450" Height="500"
+        x:Class="PressureMeasurementAppAvaloniaView.Views.EditMeasurementWindow"
+        x:DataType="vm:EditMeasurementViewModel"
+        Title="Edit Measurement">
+
+	<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,*,Auto"
+          Margin="15" RowSpacing="10">
+		<StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10">
+			<TextBox Watermark="Upper" Text="{Binding UpperPressure}" Width="80"/>
+			<TextBox Watermark="Lower" Text="{Binding LowerPressure}" Width="80"/>
+			<TextBox Watermark="Heartbeat" Text="{Binding Heartbeat}" Width="80"/>
+		</StackPanel>
+
+		<StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="5" Margin="0,5,0,0">
+			<TextBlock Text="Date:" FontWeight="Bold" VerticalAlignment="Center"/>
+			<TextBlock Text="{Binding MeasureDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
+                     FontWeight="Bold" VerticalAlignment="Center"/>
+		</StackPanel>
+		<TextBlock Grid.Row="2"
+                 Text="{Binding PressureState.Name, StringFormat='Current state: {0}'}"
+                 FontStyle="Italic"/>
+		<TextBox Grid.Row="3" Watermark="Description" Text="{Binding Description}"/>
+
+		<StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="15">
+			<CheckBox Content="Smoking" IsChecked="{Binding Smoking}"/>
+			<CheckBox Content="Alcohol" IsChecked="{Binding Alcohol}"/>
+		</StackPanel>
+		<StackPanel Grid.Row="5" Orientation="Horizontal" Spacing="15">
+			<CheckBox Content="Sport" IsChecked="{Binding Sport}"/>
+			<CheckBox Content="Stretching" IsChecked="{Binding Stretching}"/>
+		</StackPanel>
+		<StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+			<Button Content="Cancel" Command="{Binding CancelCommand}" Width="100"/>
+			<Button Content="Save" Command="{Binding SaveCommand}" Width="100" Classes="Primary"/>
+		</StackPanel>
+	</Grid>
+</Window>
