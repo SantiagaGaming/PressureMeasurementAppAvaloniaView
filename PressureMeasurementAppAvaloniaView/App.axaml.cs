@@ -43,10 +43,16 @@ public partial class App : Application
                 _apiBaseUrl
             ));
 
+        services.AddSingleton<IKafkaConsumerService>(provider =>
+            new KafkaConsumerService(
+                _kafkaServer,
+                "pressure-measurement-group"
+            ));
+
         services.AddTransient(provider =>
             new MainViewModel(
                 provider.GetRequiredService<IApiService>(),
-                _kafkaServer
+                provider.GetRequiredService<IKafkaConsumerService>()
             ));
     }
 

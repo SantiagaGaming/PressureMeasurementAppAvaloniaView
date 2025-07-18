@@ -20,7 +20,7 @@ namespace PressureMeasurementAppAvaloniaView.ViewModels;
 public partial class MainViewModel : ViewModelBase, IDisposable
 {
     private readonly IApiService _apiService;
-    private readonly IConsumer<Ignore, string> _kafkaConsumer;
+    private readonly IKafkaConsumerService _kafkaConsumerService;
     private readonly CancellationTokenSource _cts = new();
 
     [ObservableProperty]
@@ -32,46 +32,22 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     [ObservableProperty]
     private DateTimeOffset? _tillDate;
 
-    public MainViewModel(IApiService apiService, string kafkaServer)
+    public MainViewModel(IApiService apiService, IKafkaConsumerService kafkaConsumerService)
     {
         _apiService = apiService;
+        _kafkaConsumerService = kafkaConsumerService;
+
         FromDate = DateTimeOffset.Now.AddDays(-7);
         TillDate = DateTimeOffset.Now;
 
-        var kafkaConfig = new ConsumerConfig
+        // Подписываемся на события Kafka
+        _kafkaConsumerService.OnMessageReceived += async message =>
         {
-            BootstrapServers = kafkaServer,
-            GroupId = "pressure-measurement-group",
-            AutoOffsetReset = AutoOffsetReset.Earliest,
-            EnableAutoCommit = false
+            await LoadMeasurements();
         };
 
-        _kafkaConsumer = new ConsumerBuilder<Ignore, string>(kafkaConfig).Build();
-        _kafkaConsumer.Subscribe("pressure-events");
-
-        Task.Run(ConsumeKafkaMessages);
-    }
-    private async Task ConsumeKafkaMessages()
-    {
-        while (!_cts.IsCancellationRequested)
-        {
-            try
-            {
-                var result = _kafkaConsumer.Consume(_cts.Token);
-
-                await LoadMeasurements();
-
-                _kafkaConsumer.StoreOffset(result);
-            }
-            catch (OperationCanceledException)
-            {
-             
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Kafka consume error: {ex.Message}");
-            }
-        }
+        // Запускаем потребителя Kafka
+        _ = _kafkaConsumerService.StartConsumingAsync("pressure-events", _cts.Token);
     }
 
     public async Task InitializeAsync()
@@ -177,6 +153,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             }
         }
     }
+
     [RelayCommand]
     private async Task ExportToExcel()
     {
@@ -190,9 +167,9 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             {
                 Title = "Save Excel File",
                 Filters = new List<FileDialogFilter>
-            {
-                new() { Name = "Excel Files", Extensions = { "xlsx" } }
-            },
+                {
+                    new() { Name = "Excel Files", Extensions = { "xlsx" } }
+                },
                 InitialFileName = GenerateFileName()
             };
 
@@ -206,7 +183,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         catch (Exception ex)
         {
             Console.WriteLine($"Error exporting to Excel: {ex.Message}");
- 
         }
     }
 
@@ -222,11 +198,11 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private Window GetMainWindow() =>
         (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow
         ?? throw new InvalidOperationException("Main window not found");
+
     public void Dispose()
     {
         _cts.Cancel();
-        _kafkaConsumer?.Close();
-        _kafkaConsumer?.Dispose();
+        _kafkaConsumerService?.Dispose();
         _cts.Dispose();
     }
 }
